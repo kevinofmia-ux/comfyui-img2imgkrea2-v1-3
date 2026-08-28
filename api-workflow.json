@@ -1,1 +1,514 @@
-{"111":{"inputs":{"vae_name":"wan21-vae.safetensors"},"class_type":"VAELoader","_meta":{"title":"VAELoader"}},"112":{"inputs":{"clip":["138",1],"text":""},"class_type":"CLIPTextEncode","_meta":{"title":"CLIP Text Encode (Positive Prompt)"}},"117":{"inputs":{"clip":["138",1],"text":""},"class_type":"CLIPTextEncode","_meta":{"title":"CLIP Text Encode (Negative Prompt)"}},"138":{"inputs":{"model":["185",0],"clip":["266",0]},"class_type":"Power Lora Loader (rgthree)","_meta":{"title":"Power Lora Loader (rgthree)"}},"170":{"inputs":{"model":["138",0],"positive":["112",0],"negative":["117",0],"latent_image":["173",0],"seed":["269",0],"steps":8,"cfg":1,"sampler_name":"euler","scheduler":"simple","denoise":0.5},"class_type":"KSampler","_meta":{"title":"KSampler"}},"173":{"inputs":{"pixels":["192",0],"vae":["111",0]},"class_type":"VAEEncode","_meta":{"title":"VAEEncode"}},"174":{"inputs":{"image":"yourcindyrellaa_Your_captain_👩🏻‍✈️🫡_2026-06-06_DZQGe3wjURN_3913656585918694477_8.jpg"},"class_type":"LoadImage","_meta":{"title":"LoadImage"}},"182":{"inputs":{"unet_name":"krea2_turbo_nvfp4.safetensors","weight_dtype":"default"},"class_type":"UNETLoader","_meta":{"title":"UNETLoader"}},"185":{"inputs":{"model":["182",0],"shift":3},"class_type":"ModelSamplingAuraFlow","_meta":{"title":"ModelSamplingAuraFlow"}},"192":{"inputs":{"images":["174",0],"longer_edge":1024},"class_type":"ResizeImagesByLongerEdge","_meta":{"title":"ResizeImagesByLongerEdge"}},"194":{"inputs":{"model":["138",0],"positive":["112",0],"negative":["117",0],"latent_image":["259",0],"seed":["269",0],"steps":3,"cfg":1,"sampler_name":"euler","scheduler":"simple","denoise":0.3},"class_type":"KSampler","_meta":{"title":"KSampler"}},"195":{"inputs":{"samples":["194",0],"vae":["111",0]},"class_type":"VAEDecode","_meta":{"title":"VAEDecode"}},"205":{"inputs":{"images":["195",0]},"class_type":"PreviewImage","_meta":{"title":"Preview Upscaling"}},"227":{"inputs":{"samples":["170",0],"vae":["111",0]},"class_type":"VAEDecode","_meta":{"title":"VAEDecode"}},"228":{"inputs":{"images":["227",0]},"class_type":"PreviewImage","_meta":{"title":"Preview"}},"229":{"inputs":{},"class_type":"Fast Groups Muter (rgthree)","_meta":{"title":"Fast Groups Muter (rgthree)"}},"248":{"inputs":{"image":["205",0],"clip":["266",0],"vae":["111",0],"model":["138",0]},"class_type":"96a54609-04dd-4fe2-9d45-ce91d2eef0c4","_meta":{"title":"96a54609-04dd-4fe2-9d45-ce91d2eef0c4"}},"251":{"inputs":{"images":["272",0],"filename_prefix":"ComfyUI"},"class_type":"SaveImage","_meta":{"title":"SaveImage"}},"256":{"inputs":{"model_name":"4xNomosWebPhoto_RealPLKSR.pth"},"class_type":"UpscaleModelLoader","_meta":{"title":"UpscaleModelLoader"}},"257":{"inputs":{"upscale_model":["256",0],"image":["227",0]},"class_type":"ImageUpscaleWithModel","_meta":{"title":"ImageUpscaleWithModel"}},"258":{"inputs":{"image":["257",0],"upscale_method":"lanczos","scale_by":0.5},"class_type":"ImageScaleBy","_meta":{"title":"ImageScaleBy"}},"259":{"inputs":{"pixels":["258",0],"vae":["111",0]},"class_type":"VAEEncode","_meta":{"title":"VAEEncode"}},"266":{"inputs":{"clip_name":"qwen3vl_4b_fp8_scaled.safetensors","type":"krea2","device":"default"},"class_type":"CLIPLoader","_meta":{"title":"CLIPLoader"}},"269":{"inputs":{},"class_type":"SeedNode","_meta":{"title":"SeedNode"}},"270":{"inputs":{"TARGET_IMAGE":["248",0],"COLOR_REFERENCE":["174",0]},"class_type":"ChromaGradeColorMatch","_meta":{"title":"ChromaGradeColorMatch"}},"272":{"inputs":{"images":["270",0]},"class_type":"PreviewImage","_meta":{"title":"PreviewImage"}}}
+{
+  "111": {
+    "inputs": {
+      "vae_name": "wan21-vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Charger VAE"
+    }
+  },
+  "112": {
+    "inputs": {
+      "text": "s0f1a, A vertical, close-up smartphone-style portrait of a woman posing indoors in a bedroom, framed from around the upper thighs/hips to slightly above the head. Her torso is angled subtly away from the camera while her shoulders remain open toward the lens, creating a confident, posed stance. One shoulder sits slightly lower than the other, with her arms relaxed alongside her body. Her upper body leans very slightly forward, emphasizing the fitted silhouette of the outfit.\n\nShe is wearing a fitted white sleeveless camisole-style crop top with thin straps and a low, softly curved neckline. The fabric is covered with small repeating cartoon character prints in muted gray, blue, and pale pink tones. Small buttons run vertically down the center of the top. The garment closely follows the contours of her torso and ends above the waist, exposing a narrow section of midriff. She wears matching low-rise white bottoms featuring the same printed pattern. A small metallic navel piercing is visible, along with a delicate layered gold necklace resting around her neck and upper chest. **Her skin is completely free of tattoos, body writing, ink, or markings.**\n\nThe room is illuminated primarily by saturated purple and violet ambient LED lighting, creating a strong colorful glow across the walls, ceiling, clothing, and skin. A brighter frontal light, similar to a phone flash or ring light, illuminates the woman from the camera direction, producing warm skin tones and crisp subject detail against the cooler purple environment.\n\nThe background is a simple modern bedroom with large white sliding wardrobe doors along one side, a bed partially visible at the bottom of the frame, and plain light-colored walls. Soft projected or reflected purple light patterns appear across the ceiling and rear wall, adding subtle texture while keeping the environment uncluttered.\n\nOverall aesthetic: realistic casual social-media portrait, handheld smartphone photography, vertical 9:16 composition, intimate bedroom setting, direct frontal illumination mixed with purple LED ambience, saturated violet color palette, crisp subject focus, realistic proportions and fabric textures, subtle phone-camera processing, candid Instagram/TikTok-style photography, **clean unmarked skin, no tattoos anywhere on the body**.",
+      "clip": [
+        "138",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Positive Prompt)"
+    }
+  },
+  "117": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "138",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Negative Prompt)"
+    }
+  },
+  "138": {
+    "inputs": {
+      "PowerLoraLoaderHeaderWidget": {
+        "type": "PowerLoraLoaderHeaderWidget"
+      },
+      "lora_1": {
+        "on": true,
+        "lora": "HORNY AMATEUR LORA .safetensors",
+        "strength": 0.5
+      },
+      "lora_2": {
+        "on": true,
+        "lora": "Sofia-KREA.safetensors",
+        "strength": 1.05
+      },
+      "lora_3": {
+        "on": true,
+        "lora": "RealisticSnapshotKrea2.safetensors",
+        "strength": 1
+      },
+      "lora_4": {
+        "on": true,
+        "lora": "lenovo_krea2.safetensors",
+        "strength": 0.5
+      },
+      "lora_5": {
+        "on": false,
+        "lora": "KIRK_000001000.safetensors",
+        "strength": 1
+      },
+      "➕ Add Lora": "",
+      "model": [
+        "185",
+        0
+      ],
+      "clip": [
+        "266",
+        0
+      ]
+    },
+    "class_type": "Power Lora Loader (rgthree)",
+    "_meta": {
+      "title": "Power Lora Loader (rgthree)"
+    }
+  },
+  "170": {
+    "inputs": {
+      "seed": [
+        "269",
+        0
+      ],
+      "steps": 8,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 0.5,
+      "model": [
+        "138",
+        0
+      ],
+      "positive": [
+        "112",
+        0
+      ],
+      "negative": [
+        "117",
+        0
+      ],
+      "latent_image": [
+        "173",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "173": {
+    "inputs": {
+      "pixels": [
+        "192",
+        0
+      ],
+      "vae": [
+        "111",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  },
+  "174": {
+    "inputs": {
+      "image": "premiere_image.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Charger Image"
+    }
+  },
+  "182": {
+    "inputs": {
+      "unet_name": "krea2_turbo_nvfp4.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Charger Modèle Diffusion"
+    }
+  },
+  "185": {
+    "inputs": {
+      "shift": 3,
+      "model": [
+        "182",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingAuraFlow",
+    "_meta": {
+      "title": "ModelSamplingAuraFlow"
+    }
+  },
+  "192": {
+    "inputs": {
+      "longer_edge": 1024,
+      "images": [
+        "174",
+        0
+      ]
+    },
+    "class_type": "ResizeImagesByLongerEdge",
+    "_meta": {
+      "title": "Redimensionner les images par le bord le plus long"
+    }
+  },
+  "194": {
+    "inputs": {
+      "seed": [
+        "269",
+        0
+      ],
+      "steps": 3,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 0.3,
+      "model": [
+        "138",
+        0
+      ],
+      "positive": [
+        "112",
+        0
+      ],
+      "negative": [
+        "117",
+        0
+      ],
+      "latent_image": [
+        "259",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "195": {
+    "inputs": {
+      "samples": [
+        "194",
+        0
+      ],
+      "vae": [
+        "111",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "205": {
+    "inputs": {
+      "images": [
+        "195",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Upscaling"
+    }
+  },
+  "227": {
+    "inputs": {
+      "samples": [
+        "170",
+        0
+      ],
+      "vae": [
+        "111",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "228": {
+    "inputs": {
+      "images": [
+        "227",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview"
+    }
+  },
+  "251": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "272",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Enregistrer Image"
+    }
+  },
+  "256": {
+    "inputs": {
+      "model_name": "4xNomosWebPhoto_RealPLKSR.pth"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "Charger le modèle de mise à l'échelle"
+    }
+  },
+  "257": {
+    "inputs": {
+      "upscale_model": [
+        "256",
+        0
+      ],
+      "image": [
+        "227",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel",
+    "_meta": {
+      "title": "Agrandir l'Image (à l'aide du Modèle)"
+    }
+  },
+  "258": {
+    "inputs": {
+      "upscale_method": "lanczos",
+      "scale_by": 0.5,
+      "image": [
+        "257",
+        0
+      ]
+    },
+    "class_type": "ImageScaleBy",
+    "_meta": {
+      "title": "Agrandir l'image par"
+    }
+  },
+  "259": {
+    "inputs": {
+      "pixels": [
+        "258",
+        0
+      ],
+      "vae": [
+        "111",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  },
+  "266": {
+    "inputs": {
+      "clip_name": "qwen3vl_4b_fp8_scaled.safetensors",
+      "type": "krea2",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Charger CLIP"
+    }
+  },
+  "269": {
+    "inputs": {
+      "seed": 1902
+    },
+    "class_type": "SeedNode",
+    "_meta": {
+      "title": "Graine"
+    }
+  },
+  "270": {
+    "inputs": {
+      "mode": "quality",
+      "strength": 0.5,
+      "white_balance": 1,
+      "tonal_transfer": 1,
+      "palette_transfer": 1,
+      "skin_protection": 0.5,
+      "detail_preservation": 1,
+      "saturation": 1,
+      "TARGET_IMAGE": [
+        "248:159",
+        0
+      ],
+      "COLOR_REFERENCE": [
+        "174",
+        0
+      ]
+    },
+    "class_type": "ChromaGradeColorMatch",
+    "_meta": {
+      "title": "AI Color Match (ChromaGrade)"
+    }
+  },
+  "272": {
+    "inputs": {
+      "images": [
+        "270",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Aperçu Image"
+    }
+  },
+  "248:160": {
+    "inputs": {
+      "text": "s0f1a",
+      "clip": [
+        "266",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "248:161": {
+    "inputs": {
+      "conditioning": [
+        "248:160",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "ConditioningZeroOut"
+    }
+  },
+  "248:162": {
+    "inputs": {
+      "model_name": "bbox/face_yolov8m.pt"
+    },
+    "class_type": "UltralyticsDetectorProvider",
+    "_meta": {
+      "title": "UltralyticsDetectorProvider"
+    }
+  },
+  "248:163": {
+    "inputs": {
+      "model_name": "sam_vit_b_01ec64.pth",
+      "device_mode": "AUTO"
+    },
+    "class_type": "SAMLoader",
+    "_meta": {
+      "title": "SAMLoader (Impact)"
+    }
+  },
+  "248:166": {
+    "inputs": {
+      "shift": 0.65,
+      "model": [
+        "138",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingAuraFlow",
+    "_meta": {
+      "title": "ModelSamplingAuraFlow"
+    }
+  },
+  "248:159": {
+    "inputs": {
+      "guide_size": 1024,
+      "guide_size_for": true,
+      "max_size": 1024,
+      "seed": 446700986820560.9,
+      "steps": 3,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 0.5,
+      "feather": 27,
+      "noise_mask": true,
+      "force_inpaint": true,
+      "bbox_threshold": 0.214000244140625,
+      "bbox_dilation": 35,
+      "bbox_crop_factor": 1.2000000000000002,
+      "sam_detection_hint": "center-1",
+      "sam_dilation": 30,
+      "sam_threshold": 0.93,
+      "sam_bbox_expansion": 0,
+      "sam_mask_hint_threshold": 0.7,
+      "sam_mask_hint_use_negative": "False",
+      "drop_size": 10,
+      "wildcard": "",
+      "cycle": 1,
+      "inpaint_model": false,
+      "noise_mask_feather": 20,
+      "tiled_encode": false,
+      "tiled_decode": false,
+      "image": [
+        "205",
+        0
+      ],
+      "model": [
+        "248:166",
+        0
+      ],
+      "clip": [
+        "266",
+        0
+      ],
+      "vae": [
+        "111",
+        0
+      ],
+      "positive": [
+        "248:160",
+        0
+      ],
+      "negative": [
+        "248:161",
+        0
+      ],
+      "bbox_detector": [
+        "248:162",
+        0
+      ],
+      "sam_model_opt": [
+        "248:163",
+        0
+      ]
+    },
+    "class_type": "FaceDetailer",
+    "_meta": {
+      "title": "FaceDetailer"
+    }
+  }
+}
