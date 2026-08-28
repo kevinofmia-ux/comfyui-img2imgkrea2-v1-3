@@ -59,7 +59,7 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack \
 
 # ------------------------------------------------------------
 # CHROMAGRADE
-# Directement depuis ce repo GitHub
+# Depuis le repo GitHub
 # ------------------------------------------------------------
 
 COPY ComfyUI-ChromaGrade /comfyui/custom_nodes/ComfyUI-ChromaGrade
@@ -145,40 +145,22 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # LORA SOFIA-KREA
-# Depuis la Release GitHub
+# GitHub Release v1
 # ============================================================
 
 RUN wget --progress=dot:giga \
     -O "/comfyui/models/loras/Sofia-KREA.safetensors" \
-    "https://github.com/kevinofmia-ux/comfyui-img2imgkrea2-v1-3/releases/latest/download/Sofia-KREA.safetensors"
+    "https://github.com/kevinofmia-ux/comfyui-img2imgkrea2-v1-3/releases/download/v1/Sofia-KREA.safetensors"
 
 
 # ============================================================
 # LORA REALISTIC SNAPSHOT KREA2
+# GitHub Release v1
 # ============================================================
 
 RUN wget --progress=dot:giga \
     -O "/comfyui/models/loras/RealisticSnapshotKrea2.safetensors" \
-    "https://civitai.com/api/download/models/2268008"
-
-
-# ============================================================
-# LORA LENOVO KREA2
-# ============================================================
-
-RUN wget --progress=dot:giga \
-    -O "/comfyui/models/loras/lenovo_krea2.safetensors" \
-    "https://civitai.com/api/download/models/3075606"
-
-
-# ============================================================
-# LORA HORNY AMATEUR
-# Le workflow attend EXACTEMENT ce nom
-# ============================================================
-
-RUN wget --progress=dot:giga \
-    -O "/comfyui/models/loras/HORNY AMATEUR LORA .safetensors" \
-    "https://drive.usercontent.google.com/download?id=1YBa6VCXJbeBzyoQskQ-lPl4HyRIIkiuN&export=download&confirm=t"
+    "https://github.com/kevinofmia-ux/comfyui-img2imgkrea2-v1-3/releases/download/v1/RealisticSnapshotKrea2.safetensors"
 
 
 # ============================================================
