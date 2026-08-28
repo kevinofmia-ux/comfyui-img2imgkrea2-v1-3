@@ -4,9 +4,12 @@
 
 FROM runpod/worker-comfyui:5.8.4-base
 
-# TOKEN HF - TEST
-ARG HF_TOKEN="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"
 
+# ============================================================
+# TOKEN HUGGING FACE
+# ============================================================
+
+ARG HF_TOKEN="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"
 ENV HF_TOKEN=${HF_TOKEN}
 
 
@@ -16,7 +19,10 @@ ENV HF_TOKEN=${HF_TOKEN}
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    git wget curl ca-certificates && \
+    git \
+    wget \
+    curl \
+    ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 
@@ -24,63 +30,48 @@ RUN apt-get update && \
 # CUSTOM NODES
 # ============================================================
 
+
+# ------------------------------------------------------------
 # RGTHREE
+# ------------------------------------------------------------
+
 RUN git clone https://github.com/rgthree/rgthree-comfy \
     /comfyui/custom_nodes/rgthree-comfy
 
 
+# ------------------------------------------------------------
 # IMPACT PACK
 # FaceDetailer + SAMLoader
+# ------------------------------------------------------------
+
 RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack \
     /comfyui/custom_nodes/comfyui-impact-pack && \
-    pip install --no-cache-dir \
-    -r /comfyui/custom_nodes/comfyui-impact-pack/requirements.txt
+    if [ -f /comfyui/custom_nodes/comfyui-impact-pack/requirements.txt ]; then \
+        pip install --no-cache-dir \
+        -r /comfyui/custom_nodes/comfyui-impact-pack/requirements.txt; \
+    fi
 
 
+# ------------------------------------------------------------
 # IMPACT SUBPACK
 # UltralyticsDetectorProvider
+# ------------------------------------------------------------
+
 RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack \
     /comfyui/custom_nodes/comfyui-impact-subpack && \
-    pip install --no-cache-dir \
-    -r /comfyui/custom_nodes/comfyui-impact-subpack/requirements.txt
+    if [ -f /comfyui/custom_nodes/comfyui-impact-subpack/requirements.txt ]; then \
+        pip install --no-cache-dir \
+        -r /comfyui/custom_nodes/comfyui-impact-subpack/requirements.txt; \
+    fi
 
 
-# ============================================================
+# ------------------------------------------------------------
 # CHROMAGRADE
-# TON DATASET HF PRIVE
-# Sofiavldzx/Sofia-KREA/ComfyUI-ChromaGrade
-# ============================================================
+# Directement depuis le repo GitHub
+# Le dossier ComfyUI-ChromaGrade doit être à côté du Dockerfile
+# ------------------------------------------------------------
 
-RUN python - <<'PY'
-import os
-import shutil
-from huggingface_hub import snapshot_download
-
-token = os.environ["HF_TOKEN"]
-
-tmp_dir = "/tmp/sofia-hf"
-
-snapshot_download(
-    repo_id="Sofiavldzx/Sofia-KREA",
-    repo_type="dataset",
-    token=token,
-    allow_patterns=["ComfyUI-ChromaGrade/*"],
-    local_dir=tmp_dir
-)
-
-src = os.path.join(tmp_dir, "ComfyUI-ChromaGrade")
-dst = "/comfyui/custom_nodes/ComfyUI-ChromaGrade"
-
-if not os.path.isdir(src):
-    raise RuntimeError(f"ComfyUI-ChromaGrade introuvable dans {src}")
-
-if os.path.exists(dst):
-    shutil.rmtree(dst)
-
-shutil.copytree(src, dst)
-
-print("ChromaGrade copie vers :", dst)
-PY
+COPY ComfyUI-ChromaGrade /comfyui/custom_nodes/ComfyUI-ChromaGrade
 
 RUN if [ -f /comfyui/custom_nodes/ComfyUI-ChromaGrade/requirements.txt ]; then \
         pip install --no-cache-dir \
@@ -107,7 +98,7 @@ RUN mkdir -p \
 # KREA2 TURBO
 # ============================================================
 
-RUN HF_TOKEN=${HF_TOKEN} comfy model download \
+RUN comfy model download \
     --url "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/diffusion_models/krea2_turbo_nvfp4.safetensors" \
     --relative-path models/diffusion_models \
     --filename "krea2_turbo_nvfp4.safetensors"
@@ -117,7 +108,7 @@ RUN HF_TOKEN=${HF_TOKEN} comfy model download \
 # TEXT ENCODER KREA2
 # ============================================================
 
-RUN HF_TOKEN=${HF_TOKEN} comfy model download \
+RUN comfy model download \
     --url "https://huggingface.co/Comfy-Org/Krea-2/resolve/main/text_encoders/qwen3vl_4b_fp8_scaled.safetensors" \
     --relative-path models/text_encoders \
     --filename "qwen3vl_4b_fp8_scaled.safetensors"
@@ -125,9 +116,11 @@ RUN HF_TOKEN=${HF_TOKEN} comfy model download \
 
 # ============================================================
 # VAE
+# Workflow :
+# wan21-vae.safetensors
 # ============================================================
 
-RUN HF_TOKEN=${HF_TOKEN} comfy model download \
+RUN comfy model download \
     --url "https://huggingface.co/wangkanai/wan21-vae/resolve/main/vae/wan/wan21-vae.safetensors" \
     --relative-path models/vae \
     --filename "wan21-vae.safetensors"
@@ -137,7 +130,7 @@ RUN HF_TOKEN=${HF_TOKEN} comfy model download \
 # UPSCALER
 # ============================================================
 
-RUN HF_TOKEN=${HF_TOKEN} comfy model download \
+RUN comfy model download \
     --url "https://huggingface.co/ABDALLALSWAITI/Upscalers/resolve/main/photo/4xNomosWebPhoto_RealPLKSR.pth" \
     --relative-path models/upscale_models \
     --filename "4xNomosWebPhoto_RealPLKSR.pth"
@@ -145,28 +138,30 @@ RUN HF_TOKEN=${HF_TOKEN} comfy model download \
 
 # ============================================================
 # SAM
+# FaceDetailer
 # ============================================================
 
 RUN wget --progress=dot:giga \
-    -O /comfyui/models/sams/sam_vit_b_01ec64.pth \
+    -O "/comfyui/models/sams/sam_vit_b_01ec64.pth" \
     "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth"
 
 
 # ============================================================
 # YOLO FACE
+# FaceDetailer
 # ============================================================
 
 RUN wget --progress=dot:giga \
-    -O /comfyui/models/ultralytics/bbox/face_yolov8m.pt \
+    -O "/comfyui/models/ultralytics/bbox/face_yolov8m.pt" \
     "https://huggingface.co/Bingsu/adetailer/resolve/main/face_yolov8m.pt"
 
 
 # ============================================================
 # LORA SOFIA-KREA
-# TON HF PRIVE
+# Dataset Hugging Face privé
 # ============================================================
 
-RUN curl -L \
+RUN curl --fail --location \
     -H "Authorization: Bearer ${HF_TOKEN}" \
     -o "/comfyui/models/loras/Sofia-KREA.safetensors" \
     "https://huggingface.co/datasets/Sofiavldzx/Sofia-KREA/resolve/main/Sofia-KREA.safetensors"
@@ -192,6 +187,12 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # LORA HORNY AMATEUR
+#
+# ATTENTION :
+# Le workflow attend EXACTEMENT :
+# HORNY AMATEUR LORA .safetensors
+#
+# Il y a bien un espace avant .safetensors
 # ============================================================
 
 RUN wget --progress=dot:giga \
@@ -201,6 +202,7 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # INPUT
+# Les images img2img seront envoyées par l'API RunPod
 # ============================================================
 
 RUN mkdir -p /comfyui/input
@@ -214,38 +216,47 @@ RUN echo "========================================" && \
     echo "CUSTOM NODES" && \
     echo "========================================" && \
     ls -lah /comfyui/custom_nodes && \
+    echo "" && \
     echo "========================================" && \
     echo "CHROMAGRADE" && \
     echo "========================================" && \
     ls -lah /comfyui/custom_nodes/ComfyUI-ChromaGrade && \
+    echo "" && \
     echo "========================================" && \
-    echo "DIFFUSION" && \
+    echo "DIFFUSION MODELS" && \
     echo "========================================" && \
     ls -lah /comfyui/models/diffusion_models && \
+    echo "" && \
     echo "========================================" && \
-    echo "TEXT ENCODER" && \
+    echo "TEXT ENCODERS" && \
     echo "========================================" && \
     ls -lah /comfyui/models/text_encoders && \
+    echo "" && \
     echo "========================================" && \
     echo "VAE" && \
     echo "========================================" && \
     ls -lah /comfyui/models/vae && \
+    echo "" && \
     echo "========================================" && \
-    echo "UPSCALER" && \
+    echo "UPSCALERS" && \
     echo "========================================" && \
     ls -lah /comfyui/models/upscale_models && \
+    echo "" && \
     echo "========================================" && \
     echo "LORAS" && \
     echo "========================================" && \
     ls -lah /comfyui/models/loras && \
+    echo "" && \
     echo "========================================" && \
     echo "SAM" && \
     echo "========================================" && \
     ls -lah /comfyui/models/sams && \
+    echo "" && \
     echo "========================================" && \
     echo "YOLO" && \
     echo "========================================" && \
     ls -lah /comfyui/models/ultralytics/bbox && \
+    echo "" && \
     echo "========================================" && \
     echo "BUILD READY" && \
     echo "========================================"
