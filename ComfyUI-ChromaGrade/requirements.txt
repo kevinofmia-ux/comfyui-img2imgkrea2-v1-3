@@ -1,0 +1,11 @@
+# ChromaGrade has no runtime dependency that ComfyUI does not already install.
+#
+# torch is listed so that a bare `pip install -r requirements.txt` outside a
+# ComfyUI environment still works; inside one, pip will see it as satisfied and
+# will NOT reinstall or change your existing CUDA build.
+#
+# No model weights, no network access, no compiled extensions.
+torch>=2.0.0
+
+# Optional, and only for tools/contact_sheet.py. ComfyUI already ships Pillow.
+# pillow>=9.0.0

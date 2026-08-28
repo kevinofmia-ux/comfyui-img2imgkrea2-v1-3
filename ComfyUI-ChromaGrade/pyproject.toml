@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "comfyui-chromagrade"
+version = "1.0.0"
+description = "Reference-based AI colour matching for ComfyUI: transfers a reference image's grade onto a target without touching its content."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "MONKEYFOREVER2" }]
+keywords = [
+    "comfyui",
+    "color-match",
+    "color-transfer",
+    "color-grading",
+    "optimal-transport",
+    "oklab",
+    "lut",
+    "white-balance",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Graphics",
+]
+# torch and numpy come from ComfyUI itself; nothing else is needed at runtime.
+dependencies = ["torch>=2.0.0"]
+
+[project.optional-dependencies]
+tools = ["pillow>=9.0.0"]
+
+[project.urls]
+Repository = "https://github.com/MONKEYFOREVER2/ComfyUI-ChromaGrade"
+
+[tool.comfy]
+PublisherId = "MONKEYFOREVER2"
+DisplayName = "ChromaGrade"
+Icon = ""
+includes = ["workflows"]
+
+[tool.setuptools]
+packages = ["chromagrade"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+exclude = ["__pycache__"]
+
+[tool.ruff.lint]
+# A correctness gate, not a style gate: pyflakes, the syntax/whitespace subset
+# of pycodestyle, bugbear, and import order. Style families are off on purpose
+# -- this is numeric colour code where the explicit form usually says what it
+# means, and a linter that rewrites it is a linter people stop reading.
+select = ["E4", "E7", "E9", "F", "I", "B"]
+ignore = [
+    # A custom node runs inside ComfyUI's process; one uncaught exception takes
+    # down the whole custom-node scan, so the entry points catch broadly ON
+    # PURPOSE and turn the failure into one clear log line.
+    "BLE001",
+    "E501",   # long lines here are almost all prose in docstrings
+    "E731",   # a one-line clamp lambda in `normalised()` is clearer than a def
+]
+
+[tool.ruff.lint.per-file-ignores]
+# The tools and the runner have to put the repository root on sys.path before
+# they can import anything from it, so their imports genuinely are not at top.
+"tools/*" = ["E402"]
+"tests/run_tests.py" = ["E402"]
