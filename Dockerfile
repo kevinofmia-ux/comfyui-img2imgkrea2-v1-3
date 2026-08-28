@@ -45,12 +45,46 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack \
     -r /comfyui/custom_nodes/comfyui-impact-subpack/requirements.txt
 
 
+# ============================================================
 # CHROMAGRADE
-RUN git clone https://github.com/MONKEYFOREVER2/ComfyUI-ChromaGrade \
-    /comfyui/custom_nodes/ComfyUI-ChromaGrade && \
-    cd /comfyui/custom_nodes/ComfyUI-ChromaGrade && \
-    if [ -f requirements.txt ]; then \
-        pip install --no-cache-dir -r requirements.txt; \
+# Récupéré depuis TON dataset Hugging Face privé
+# Sofiavldzx/Sofia-KREA/ComfyUI-ChromaGrade
+# ============================================================
+
+RUN python - <<'PY'
+import os
+import shutil
+from huggingface_hub import snapshot_download
+
+token = os.environ["HF_TOKEN"]
+
+tmp_dir = "/tmp/sofia-hf"
+
+snapshot_download(
+    repo_id="Sofiavldzx/Sofia-KREA",
+    repo_type="dataset",
+    token=token,
+    allow_patterns=["ComfyUI-ChromaGrade/*"],
+    local_dir=tmp_dir
+)
+
+src = os.path.join(tmp_dir, "ComfyUI-ChromaGrade")
+dst = "/comfyui/custom_nodes/ComfyUI-ChromaGrade"
+
+if not os.path.isdir(src):
+    raise RuntimeError(f"ComfyUI-ChromaGrade introuvable dans {src}")
+
+if os.path.exists(dst):
+    shutil.rmtree(dst)
+
+shutil.copytree(src, dst)
+
+print("✅ ChromaGrade copié vers :", dst)
+PY
+
+RUN if [ -f /comfyui/custom_nodes/ComfyUI-ChromaGrade/requirements.txt ]; then \
+        pip install --no-cache-dir \
+        -r /comfyui/custom_nodes/ComfyUI-ChromaGrade/requirements.txt; \
     fi
 
 
@@ -81,7 +115,6 @@ RUN HF_TOKEN=${HF_TOKEN} comfy model download \
 
 # ============================================================
 # TEXT ENCODER KREA2
-# qwen3vl_4b_fp8_scaled.safetensors
 # ============================================================
 
 RUN HF_TOKEN=${HF_TOKEN} comfy model download \
@@ -92,7 +125,7 @@ RUN HF_TOKEN=${HF_TOKEN} comfy model download \
 
 # ============================================================
 # VAE
-# Le workflow API utilise wan21-vae.safetensors
+# Ton workflow API utilise wan21-vae.safetensors
 # ============================================================
 
 RUN HF_TOKEN=${HF_TOKEN} comfy model download \
@@ -113,7 +146,6 @@ RUN HF_TOKEN=${HF_TOKEN} comfy model download \
 
 # ============================================================
 # SAM
-# FaceDetailer / SAMLoader
 # ============================================================
 
 RUN wget --progress=dot:giga \
@@ -122,8 +154,7 @@ RUN wget --progress=dot:giga \
 
 
 # ============================================================
-# YOLO FACE DETECTOR
-# UltralyticsDetectorProvider
+# YOLO FACE
 # ============================================================
 
 RUN wget --progress=dot:giga \
@@ -133,7 +164,7 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # LORA SOFIA-KREA
-# Repo Hugging Face privé
+# TON HF PRIVÉ
 # ============================================================
 
 RUN curl -L \
@@ -171,48 +202,52 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # INPUT
-# Les images img2img seront envoyées par l'API RunPod
+# Les images img2img seront envoyées via l'API RunPod
 # ============================================================
 
 RUN mkdir -p /comfyui/input
 
 
 # ============================================================
-# VERIFICATION FINALE DU BUILD
+# VERIFICATIONS FINALES
 # ============================================================
 
-RUN echo "============================================" && \
+RUN echo "========================================" && \
     echo "CUSTOM NODES" && \
-    echo "============================================" && \
+    echo "========================================" && \
     ls -lah /comfyui/custom_nodes && \
-    echo "============================================" && \
-    echo "DIFFUSION MODEL" && \
-    echo "============================================" && \
+    echo "========================================" && \
+    echo "CHROMAGRADE" && \
+    echo "========================================" && \
+    ls -lah /comfyui/custom_nodes/ComfyUI-ChromaGrade && \
+    echo "========================================" && \
+    echo "DIFFUSION" && \
+    echo "========================================" && \
     ls -lah /comfyui/models/diffusion_models && \
-    echo "============================================" && \
+    echo "========================================" && \
     echo "TEXT ENCODER" && \
-    echo "============================================" && \
+    echo "========================================" && \
     ls -lah /comfyui/models/text_encoders && \
-    echo "============================================" && \
+    echo "========================================" && \
     echo "VAE" && \
-    echo "============================================" && \
+    echo "========================================" && \
     ls -lah /comfyui/models/vae && \
-    echo "============================================" && \
+    echo "========================================" && \
     echo "UPSCALER" && \
-    echo "============================================" && \
+    echo "========================================" && \
     ls -lah /comfyui/models/upscale_models && \
-    echo "============================================" && \
+    echo "========================================" && \
     echo "LORAS" && \
-    echo "============================================" && \
+    echo "========================================" && \
     ls -lah /comfyui/models/loras && \
-    echo "============================================" && \
+    echo "========================================" && \
     echo "SAM" && \
-    echo "============================================" && \
+    echo "========================================" && \
     ls -lah /comfyui/models/sams && \
-    echo "============================================" && \
+    echo "========================================" && \
     echo "YOLO" && \
-    echo "============================================" && \
+    echo "========================================" && \
     ls -lah /comfyui/models/ultralytics/bbox && \
-    echo "============================================" && \
+    echo "========================================" && \
     echo "BUILD READY" && \
-    echo "============================================"
+    echo "========================================"
