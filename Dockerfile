@@ -6,14 +6,6 @@ FROM runpod/worker-comfyui:5.8.4-base
 
 
 # ============================================================
-# TOKEN HUGGING FACE
-# ============================================================
-
-ARG HF_TOKEN="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"
-ENV HF_TOKEN=${HF_TOKEN}
-
-
-# ============================================================
 # OUTILS
 # ============================================================
 
@@ -67,8 +59,7 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack \
 
 # ------------------------------------------------------------
 # CHROMAGRADE
-# Directement depuis le repo GitHub
-# Le dossier ComfyUI-ChromaGrade doit être à côté du Dockerfile
+# Directement depuis ce repo GitHub
 # ------------------------------------------------------------
 
 COPY ComfyUI-ChromaGrade /comfyui/custom_nodes/ComfyUI-ChromaGrade
@@ -116,8 +107,6 @@ RUN comfy model download \
 
 # ============================================================
 # VAE
-# Workflow :
-# wan21-vae.safetensors
 # ============================================================
 
 RUN comfy model download \
@@ -138,7 +127,6 @@ RUN comfy model download \
 
 # ============================================================
 # SAM
-# FaceDetailer
 # ============================================================
 
 RUN wget --progress=dot:giga \
@@ -148,7 +136,6 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # YOLO FACE
-# FaceDetailer
 # ============================================================
 
 RUN wget --progress=dot:giga \
@@ -158,13 +145,12 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # LORA SOFIA-KREA
-# Dataset Hugging Face privé
+# Depuis la Release GitHub
 # ============================================================
 
-RUN curl --fail --location \
-    -H "Authorization: Bearer ${HF_TOKEN}" \
-    -o "/comfyui/models/loras/Sofia-KREA.safetensors" \
-    "https://huggingface.co/datasets/Sofiavldzx/Sofia-KREA/resolve/main/Sofia-KREA.safetensors"
+RUN wget --progress=dot:giga \
+    -O "/comfyui/models/loras/Sofia-KREA.safetensors" \
+    "https://github.com/kevinofmia-ux/comfyui-img2imgkrea2-v1-3/releases/latest/download/Sofia-KREA.safetensors"
 
 
 # ============================================================
@@ -187,12 +173,7 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # LORA HORNY AMATEUR
-#
-# ATTENTION :
-# Le workflow attend EXACTEMENT :
-# HORNY AMATEUR LORA .safetensors
-#
-# Il y a bien un espace avant .safetensors
+# Le workflow attend EXACTEMENT ce nom
 # ============================================================
 
 RUN wget --progress=dot:giga \
@@ -202,7 +183,6 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # INPUT
-# Les images img2img seront envoyées par l'API RunPod
 # ============================================================
 
 RUN mkdir -p /comfyui/input
@@ -238,7 +218,7 @@ RUN echo "========================================" && \
     ls -lah /comfyui/models/vae && \
     echo "" && \
     echo "========================================" && \
-    echo "UPSCALERS" && \
+    echo "UPSCALER" && \
     echo "========================================" && \
     ls -lah /comfyui/models/upscale_models && \
     echo "" && \
