@@ -5,7 +5,7 @@
 FROM runpod/worker-comfyui:5.8.4-base
 
 # TOKEN HF - TEST
-ARG HF_TOKEN="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"
+ARG HF_TOKEN="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"
 
 ENV HF_TOKEN=${HF_TOKEN}
 
@@ -47,7 +47,7 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack \
 
 # ============================================================
 # CHROMAGRADE
-# Récupéré depuis TON dataset Hugging Face privé
+# TON DATASET HF PRIVE
 # Sofiavldzx/Sofia-KREA/ComfyUI-ChromaGrade
 # ============================================================
 
@@ -79,7 +79,7 @@ if os.path.exists(dst):
 
 shutil.copytree(src, dst)
 
-print("✅ ChromaGrade copié vers :", dst)
+print("ChromaGrade copie vers :", dst)
 PY
 
 RUN if [ -f /comfyui/custom_nodes/ComfyUI-ChromaGrade/requirements.txt ]; then \
@@ -125,7 +125,6 @@ RUN HF_TOKEN=${HF_TOKEN} comfy model download \
 
 # ============================================================
 # VAE
-# Ton workflow API utilise wan21-vae.safetensors
 # ============================================================
 
 RUN HF_TOKEN=${HF_TOKEN} comfy model download \
@@ -164,7 +163,7 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # LORA SOFIA-KREA
-# TON HF PRIVÉ
+# TON HF PRIVE
 # ============================================================
 
 RUN curl -L \
@@ -202,7 +201,6 @@ RUN wget --progress=dot:giga \
 
 # ============================================================
 # INPUT
-# Les images img2img seront envoyées via l'API RunPod
 # ============================================================
 
 RUN mkdir -p /comfyui/input
