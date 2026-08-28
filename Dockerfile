@@ -1,8 +1,9 @@
 # ============================================================
 # KREA2 IMG2IMG - RUNPOD SERVERLESS
+# RTX 5090 / CUDA 12.8
 # ============================================================
 
-FROM runpod/worker-comfyui:5.8.6-base
+FROM runpod/worker-comfyui:5.8.6-base-cuda12.8.1
 
 
 # ============================================================
@@ -19,9 +20,15 @@ RUN apt-get update && \
 
 
 # ============================================================
-# CUSTOM NODES
+# VERIFICATION CUDA / PYTORCH
 # ============================================================
 
+RUN python -c "import torch; print('TORCH:', torch.__version__); print('CUDA PYTORCH:', torch.version.cuda); assert torch.version.cuda.startswith('12.8')"
+
+
+# ============================================================
+# CUSTOM NODES
+# ============================================================
 
 # ------------------------------------------------------------
 # RGTHREE
@@ -59,7 +66,6 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Impact-Subpack \
 
 # ------------------------------------------------------------
 # CHROMAGRADE
-# Depuis le repo GitHub
 # ------------------------------------------------------------
 
 COPY ComfyUI-ChromaGrade /comfyui/custom_nodes/ComfyUI-ChromaGrade
@@ -68,6 +74,14 @@ RUN if [ -f /comfyui/custom_nodes/ComfyUI-ChromaGrade/requirements.txt ]; then \
         pip install --no-cache-dir \
         -r /comfyui/custom_nodes/ComfyUI-ChromaGrade/requirements.txt; \
     fi
+
+
+# ============================================================
+# RE-VERIFICATION CUDA
+# Vérifie qu'aucun custom node n'a changé PyTorch en CUDA 13
+# ============================================================
+
+RUN python -c "import torch; print('TORCH FINAL:', torch.__version__); print('CUDA FINAL:', torch.version.cuda); assert torch.version.cuda.startswith('12.8')"
 
 
 # ============================================================
@@ -144,7 +158,7 @@ RUN wget --progress=dot:giga \
 
 
 # ============================================================
-# LORA SOFIA-KREA
+# LORA SOFIA
 # GitHub Release v1
 # ============================================================
 
@@ -154,7 +168,7 @@ RUN wget --progress=dot:giga \
 
 
 # ============================================================
-# LORA REALISTIC SNAPSHOT KREA2
+# LORA REALISTIC SNAPSHOT
 # GitHub Release v1
 # ============================================================
 
@@ -218,6 +232,11 @@ RUN echo "========================================" && \
     echo "YOLO" && \
     echo "========================================" && \
     ls -lah /comfyui/models/ultralytics/bbox && \
+    echo "" && \
+    echo "========================================" && \
+    echo "PYTORCH / CUDA FINAL" && \
+    echo "========================================" && \
+    python -c "import torch; print('Torch:', torch.__version__); print('CUDA:', torch.version.cuda)" && \
     echo "" && \
     echo "========================================" && \
     echo "BUILD READY" && \
