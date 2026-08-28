@@ -2,7 +2,7 @@
 # KREA2 IMG2IMG - RUNPOD SERVERLESS
 # ============================================================
 
-FROM runpod/worker-comfyui:5.8.4-base
+FROM runpod/worker-comfyui:5.8.6-base
 
 
 # ============================================================
